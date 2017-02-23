@@ -5,8 +5,6 @@
 variable "name" {}
 variable "tags" { type = "map" }
 variable "vpc_cidr" {}
-variable "domain_name" {}
-variable "domain_name_servers" { type = "list" }
 variable "ntp_servers" { type = "list" }
 variable "az_count" { default = "3" }
 
