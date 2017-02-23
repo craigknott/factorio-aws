@@ -20,3 +20,12 @@ module "vpc" {
     create_vpn = "${var.create_vpn}"
     tags = "${var.tags}"
 }
+
+module "public_subnet" {
+    source = "./public_subnet"
+    name = "${var.name}-public"
+    vpc_id = "${module.vpc.vpc_id}"
+    default_route_table_id = "${module.vpc.vpc_default_route_table_id}"
+    cidr = "${var.vpc_cidr}"
+    tags = "${var.tags}"
+}

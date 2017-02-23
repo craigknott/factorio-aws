@@ -33,16 +33,6 @@ resource "aws_vpc_dhcp_options_association" "dhcp_options" {
   dhcp_options_id = "${aws_vpc_dhcp_options.dhcp_options.id}"
 }
 
-resource "aws_vpn_gateway" "vpn" {
-  count = "${var.create_vpn ? 1 : 0}"
-  vpc_id = "${aws_vpc.vpc.id}"
-  tags = "${merge(map("Name", "${var.name}"), var.tags)}"
-}
-
-output "vpn_gateway_id" {
-  value = "${aws_vpn_gateway.vpn.id}"
-}
-
 output "vpc_id" {
   value = "${aws_vpc.vpc.id}"
 }
