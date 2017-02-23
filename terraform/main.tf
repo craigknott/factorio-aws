@@ -28,3 +28,13 @@ module "storage" {
     vpc_id = "${module.network.vpc_id}"
     subnet_ids = "${module.network.subnet_ids}"
 }
+
+module "compute" {
+    source = "./modules/compute"
+    name = "${var.name}"
+    tags = "${var.tags}"
+    region = "${var.region}"
+    vpc_id = "${module.network.vpc_id}"
+    subnet_ids = "${module.network.subnet_ids}"
+    ssh_key = "${var.ssh_key}"
+}
