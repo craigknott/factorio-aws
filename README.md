@@ -2,6 +2,25 @@
 
 This repo will deploy a headless server running in AWS for [Factorio][factorio].
 
+After setup, running the deploy will create:
+
+* A VPC
+* Public subnets
+* An internet gateway with a simple default route
+* Security groups
+* EFS volumes and mount targets
+* SSH Keypairs
+* AMIs from base Ubuntu Trusty
+* Launch configuration
+* Autoscaling group
+
+At this point, the autoscaling group will launch a new instance that runs the
+Factorio server. You can see its IP in the AWS console and then connect from
+the game. If you make changes, just rerun deployment and terminate a the
+existing instance. The save data for the game will be stored in a persistent
+volume, so machines can be arbitrarily shutdown (though this will stop the
+server for a time).
+
 ## Setup
 
 Before changes can be deployed to your infrastructure, you'll need to setup a few variables. Edit `terraform.tfvars.sample` and populate or change necessary variables:
