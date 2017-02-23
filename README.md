@@ -14,7 +14,8 @@ After setup, running the deploy will create:
 * EC2 instance
 * Route53 records (if `route53_zone` is provided)
 
-I couldn't get autoscaling groups to work with route53, so I decided to create the instance by hand.
+I couldn't get autoscaling groups to work with route53, so I decided to create
+the instance directly.
 
 ## Setup
 
