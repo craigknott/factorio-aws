@@ -16,35 +16,22 @@ resource "aws_key_pair" "key" {
     public_key = "${var.ssh_key}"
 }
 
-resource "aws_security_group" "load_balancer" {
-    description = "Controls access to ALB"
-    vpc_id = "${var.vpc_id}"
-    name = "${var.name}-alb"
-    tags = "${merge(map("Name", "${var.name}"), var.tags)}"
-    ingress {
-        protocol = "udp"
-        from_port = 34197
-        to_port = 34197
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-}
-
 resource "aws_security_group" "instance" {
     description = "Controls access to application instances"
     vpc_id = "${var.vpc_id}"
     name = "${var.name}-instance"
     tags = "${var.tags}"
     ingress {
+        protocol = "tcp"
+        from_port = 22
+        to_port = 22
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    ingress {
         protocol = "udp"
         from_port = 34197
         to_port = 34197
-        security_groups = [ "${aws_security_group.load_balancer.id}" ]
+        cidr_blocks = ["0.0.0.0/0"]
     }
     egress {
         from_port = 0
