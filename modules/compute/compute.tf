@@ -14,6 +14,7 @@ variable "ssh_key" {}
 variable "factorio_version" { default = "0.14.22" }
 variable "game_name" { default = "current" }
 variable "efs_fs_id" { default = "" }
+variable "route53_zone" { default = "" }
 
 # -------
 # Storage
@@ -24,6 +25,7 @@ variable "efs_fs_id" { default = "" }
 resource "aws_security_group" "efs" {
     description = "Control EFS mount access for ${var.name}"
     vpc_id = "${var.vpc_id}"
+    name = "${var.name}-efs"
     tags = "${merge(map("Name", "${var.name}-efs"), var.tags)}"
     ingress {
         protocol = "tcp"
@@ -64,7 +66,7 @@ resource "aws_security_group" "instance" {
     description = "Controls access to application instances"
     vpc_id = "${var.vpc_id}"
     name = "${var.name}-instance"
-    tags = "${var.tags}"
+    tags = "${merge(map("Name", "${var.name}-instance"), var.tags)}"
     ingress {
         protocol = "tcp"
         from_port = 22
@@ -102,41 +104,39 @@ data "template_file" "cloud_config" {
     }
 }
 
-resource "aws_launch_configuration" "factorio" {
-    security_groups = [
-        "${aws_security_group.instance.id}"
-    ]
+resource "aws_instance" "factorio" {
     key_name = "${aws_key_pair.key.key_name}"
-    image_id = "${module.ami.ami_id}"
+    ami = "${module.ami.ami_id}"
     instance_type = "${var.instance_type}"
     associate_public_ip_address = true
     user_data = "${data.template_file.cloud_config.rendered}"
     security_groups = ["${aws_security_group.instance.id}"]
     lifecycle { create_before_destroy = true }
-}
-
-resource "aws_autoscaling_group" "factorio" {
-    name = "${var.name}"
-    vpc_zone_identifier = ["${var.subnet_ids}"]
-    min_size = "1"
-    max_size = "1"
-    desired_capacity = "1"
-    launch_configuration = "${aws_launch_configuration.factorio.name}"
-    # ASG tagging is different because of the propagate_at_launch flag
-    # in the AWS API. I couldn't come up with a pragmatic way to build
-    # these tags.
-    tag = [
-        {
-            key = "Name"
-            value = "${var.name}"
-            propagate_at_launch = true
-        },
-        {
-            key = "source"
-            value = "terraform"
-            propagate_at_launch = true
-        }
+    depends_on = [
+        "aws_efs_mount_target.efs",
+        "aws_security_group.instance"
     ]
-    depends_on = ["aws_efs_mount_target.efs"]
 }
 
+data "aws_route53_zone" "dns" {
+    count = "${var.route53_zone == "" ? 0 : 1}"
+    name = "${var.route53_zone}"
+}
+
+resource "aws_route53_record" "factorio" {
+    count = "${var.route53_zone == "" ? 0 : 1}"
+    zone_id = "${data.aws_route53_zone.dns.zone_id}"
+    name = "${var.name}"
+    type = "A"
+    ttl = "300"
+    records = ["${aws_instance.factorio.public_ip}"]
+    depends_on = ["aws_instance.factorio"]
+}
+
+output "ip" {
+    value = "${aws_instance.factorio.public_ip}"
+}
+
+output "dns" {
+    value = "${var.name}.${data.aws_route53_zone.dns.name}"
+}

@@ -8,18 +8,13 @@ After setup, running the deploy will create:
 * Public subnets
 * An internet gateway with a simple default route
 * Security groups
-* EFS volumes and mount targets
+* EFS volumes and mount targets (if `efs_id` is not provided)
 * SSH Keypairs
 * AMIs from base Ubuntu Trusty
-* Launch configuration
-* Autoscaling group
+* EC2 instance
+* Route53 records (if `route53_zone` is provided)
 
-At this point, the autoscaling group will launch a new instance that runs the
-Factorio server. You can see its IP in the AWS console and then connect from
-the game. If you make changes, just rerun deployment and terminate a the
-existing instance. The save data for the game will be stored in a persistent
-volume, so machines can be arbitrarily shutdown (though this will stop the
-server for a time).
+I couldn't get autoscaling groups to work with route53, so I decided to create the instance by hand.
 
 ## Setup
 
@@ -39,6 +34,7 @@ Before changes can be deployed to your infrastructure, you'll need to setup a fe
 | `domain_name_servers` | `[]string` | A list of DNS server IPs to provide for DHCP. |  | No |
 | `ntp_servers` | `[]string` | A list of NTP servers to provide for DHCP. |  | No |
 | `ssh_key` | `string` | Public key that will be granted SSH access to EC2 instance |  | Yes |
+| `route53_zone` | `string` | A Route53 zone in which to create an A record for `name` pointing to the instance. | | No |
 
 Once all variables have been configured, save the file as `terraform.tfvars`.
 
