@@ -45,6 +45,8 @@ Credentials are not necessarily required. If not provided as a static variable, 
 
 If you're able to run the [AWS CLI][aws cli], you should be able to run Terraform without providing static credentials.
 
+### Policy (TODO)
+
 ## Contributing
 
 I'm happy to accept contributions. Feel free to send me a pull request or just file an issue. Please be mindful to not include your credentials. I don't want them.
