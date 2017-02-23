@@ -6,7 +6,6 @@ variable "region" {}
 variable "vpc_cidr" {}
 variable "ntp_servers" { type = "list" }
 variable "ssh_key" {}
-variable "efs_id" { default = "" }
 variable "route53_zone" { default = "" }
 
 provider "aws" {
@@ -31,7 +30,6 @@ module "compute" {
     vpc_id = "${module.network.vpc_id}"
     subnet_ids = "${module.network.subnet_ids}"
     ssh_key = "${var.ssh_key}"
-    efs_fs_id = "${var.efs_id}"
     route53_zone = "${var.route53_zone}"
 }
 
