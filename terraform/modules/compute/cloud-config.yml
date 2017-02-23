@@ -1,0 +1,19 @@
+#cloud-config
+hostname: factorio
+package_upgrade: true
+packages:
+  - nfs-common
+users:
+  - name: factorio
+    homedir: /opt/factorio
+    lock_passwd: true 
+mounts:
+  - [ ${fs_id}.efs.${aws_region}.amazonaws.com:/, /mnt, nfs4, "nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2", "0", "0" ]
+runcmd:
+  - curl -L "https://www.factorio.com/get-download/${factorio_version}/headless/linux64" -o /opt/factorio.tar.gz
+  - cd /opt
+  - tar xvf factorio.tar.gz
+  - chown -R factorio:factorio /opt/factorio
+  - su factorio
+  - [sh, -c, "[ -f /opt/factorio/save/${game_name}.zip ] && /opt/factorio/bin/x64/factorio --create /mnt/${game_name}.zip" ]
+  - /opt/factorio/bin/x64/factorio --start-server /mnt/${game_name}.zip 

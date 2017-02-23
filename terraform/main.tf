@@ -37,4 +37,5 @@ module "compute" {
     vpc_id = "${module.network.vpc_id}"
     subnet_ids = "${module.network.subnet_ids}"
     ssh_key = "${var.ssh_key}"
+    efs_id = "${module.storage.efs_id}"
 }
