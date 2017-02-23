@@ -13,8 +13,8 @@ Before changes can be deployed to your infrastructure, you'll need to setup a fe
 | `name` | `string` | Base name for all components created. Some components well append aditional strings, such as "factorio-public" for a public subnet. | "factorio" | yes | 
 | `region` | `string` | AWS region in which to create components. |  | yes |
 | `tags` | `map[string]string` | Map of strings to strings. Tags to apply to components as key-value pairs. Note that the "Name" tag will be based on the `name` variable and will be overridden. | `{"source": "terraform"}` | yes |
-| `aws_access_key` | `string` | AWS access key. More on this [below][#iam-setup]. |  | No |
-| `aws_secret_key` | `string` | AWS secret access key. More on this [below][#iam-setup]. |  | No |
+| `aws_access_key` | `string` | AWS access key. More on this [below](#iam-setup). |  | No |
+| `aws_secret_key` | `string` | AWS secret access key. More on this [below](#iam-setup). |  | No |
 | `vpc_cidr` | `string` | The address space that the VPC will contain. If you're not sure, leave the default. | "10.0.0.0/16" | Yes |
 | `domain_name` | `string` | Domain name suffix to provide for DHCP. |  | No |
 | `domain_name_servers` | `[]string` | A list of DNS server IPs to provide for DHCP. |  | No |
