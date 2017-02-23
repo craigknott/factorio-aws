@@ -110,7 +110,7 @@ resource "aws_instance" "factorio" {
     instance_type = "${var.instance_type}"
     associate_public_ip_address = true
     user_data = "${data.template_file.cloud_config.rendered}"
-    security_groups = ["${aws_security_group.instance.id}"]
+    vpc_security_group_ids = ["${aws_security_group.instance.id}"]
     lifecycle { create_before_destroy = true }
     depends_on = [
         "aws_efs_mount_target.efs",
