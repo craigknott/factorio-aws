@@ -14,4 +14,4 @@ runcmd:
   - cd /opt
   - tar xvf factorio.tar.gz
   - sh -c "if [ ! -f /opt/factorio/save/${game_name}.zip ]; then /opt/factorio/bin/x64/factorio --create /opt/factorio/save/${game_name}.zip; fi"
-  - /opt/factorio/bin/x64/factorio --start-server /mnt/${game_name}.zip 
+  - /opt/factorio/bin/x64/factorio --start-server /opt/factorio/save/${game_name}.zip 
