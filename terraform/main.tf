@@ -6,6 +6,7 @@ variable "region" {}
 variable "vpc_cidr" {}
 variable "ntp_servers" { type = "list" }
 variable "ssh_key" {}
+variable "efs_id" { default = "" }
 
 provider "aws" {
     region = "${var.region}"
@@ -21,14 +22,6 @@ module "network" {
     ntp_servers         = "${var.ntp_servers}"
 }
 
-module "storage" {
-    source = "./modules/storage"
-    name = "${var.name}"
-    tags = "${merge(map("Name", var.name), var.tags)}"
-    vpc_id = "${module.network.vpc_id}"
-    subnet_ids = "${module.network.subnet_ids}"
-}
-
 module "compute" {
     source = "./modules/compute"
     name = "${var.name}"
@@ -37,5 +30,5 @@ module "compute" {
     vpc_id = "${module.network.vpc_id}"
     subnet_ids = "${module.network.subnet_ids}"
     ssh_key = "${var.ssh_key}"
-    efs_id = "${module.storage.efs_id}"
+    efs_fs_id = "${var.efs_id}"
 }

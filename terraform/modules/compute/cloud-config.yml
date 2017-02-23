@@ -1,19 +1,17 @@
 #cloud-config
-hostname: factorio
 package_upgrade: true
 packages:
   - nfs-common
-users:
-  - name: factorio
-    homedir: /opt/factorio
-    lock_passwd: true 
 mounts:
-  - [ ${fs_id}.efs.${aws_region}.amazonaws.com:/, /mnt, nfs4, "nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2", "0", "0" ]
-runcmd:
+  - useradd factorio --home-dir /opt/factorio --create-home
+  - echo "${fs_id}.efs.${aws_region}.amazonaws.com:/ /mnt/efs nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
+  - mount -a -t nfs4
+  - mkdir -p /mnt/efs/save
+  - chown factorio:factorio /mnt/efs/save
   - curl -L "https://www.factorio.com/get-download/${factorio_version}/headless/linux64" -o /opt/factorio.tar.gz
+  - ln -s /mnt/efs/save /opt/factorio/save
+  - su factorio
   - cd /opt
   - tar xvf factorio.tar.gz
-  - chown -R factorio:factorio /opt/factorio
-  - su factorio
-  - [sh, -c, "[ -f /opt/factorio/save/${game_name}.zip ] && /opt/factorio/bin/x64/factorio --create /mnt/${game_name}.zip" ]
+  - sh -c "if [ ! -f /opt/factorio/save/${game_name}.zip ]; then /opt/factorio/bin/x64/factorio --create /opt/factorio/save/${game_name}.zip; fi"
   - /opt/factorio/bin/x64/factorio --start-server /mnt/${game_name}.zip 
