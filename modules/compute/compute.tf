@@ -106,11 +106,12 @@ data "template_file" "cloud_config" {
 
 resource "aws_instance" "factorio" {
     key_name = "${aws_key_pair.key.key_name}"
+    subnet_id = "${element(var.subnet_ids, 0)}"
     ami = "${module.ami.ami_id}"
     instance_type = "${var.instance_type}"
     associate_public_ip_address = true
     user_data = "${data.template_file.cloud_config.rendered}"
-    vpc_security_group_ids = ["${aws_security_group.instance.id}"]
+    security_groups = ["${aws_security_group.instance.name}"]
     lifecycle { create_before_destroy = true }
     depends_on = [
         "aws_efs_mount_target.efs",
