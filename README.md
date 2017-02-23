@@ -34,6 +34,7 @@ Before changes can be deployed to your infrastructure, you'll need to setup a fe
 | `domain_name_servers` | `[]string` | A list of DNS server IPs to provide for DHCP. |  | No |
 | `ntp_servers` | `[]string` | A list of NTP servers to provide for DHCP. |  | No |
 | `ssh_key` | `string` | Public key that will be granted SSH access to EC2 instance |  | Yes |
+| `efs_id` | `string` | EFS volume ID. If provided, a volume will not be created but will still be mounted. Good for persistent games. | | No |
 | `route53_zone` | `string` | A Route53 zone in which to create an A record for `name` pointing to the instance. | | No |
 
 Once all variables have been configured, save the file as `terraform.tfvars`.
