@@ -71,6 +71,6 @@ I'm happy to accept contributions. Feel free to send me a pull request or just f
 
 [factorio]: https://www.factorio.com/
 [terraform]: https://www.terraform.io/
-[license]: ../blob/master/LICENSE
+[license]: ../master/LICENSE
 [aws provider]: https://www.terraform.io/docs/providers/aws/
 [aws cli]: https://aws.amazon.com/cli/
