@@ -95,7 +95,7 @@ data "template_file" "cloud_config" {
     template = "${file("${path.module}/cloud-config.yml")}"
     vars {
         aws_region = "${var.region}"
-        fs_id = "${var.efs_fs_id == "" ? aws_efs_file_system.efs.id : var.efs_fs_id}"
+        fs_id = "${aws_efs_file_system.efs.id}"
         factorio_version = "${var.factorio_version}"
         game_name = "${var.game_name}"
     }
