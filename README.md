@@ -8,7 +8,7 @@ After setup, running the deploy will create:
 * Public subnets
 * An internet gateway with a simple default route
 * Security groups
-* EFS volumes and mount targets (if `efs_id` is not provided)
+* EFS volumes and mount targets
 * SSH Keypairs
 * AMIs from base Ubuntu Trusty
 * EC2 instance
@@ -35,7 +35,6 @@ Before changes can be deployed to your infrastructure, you'll need to setup a fe
 | `domain_name_servers` | `[]string` | A list of DNS server IPs to provide for DHCP. |  | No |
 | `ntp_servers` | `[]string` | A list of NTP servers to provide for DHCP. |  | No |
 | `ssh_key` | `string` | Public key that will be granted SSH access to EC2 instance |  | Yes |
-| `efs_id` | `string` | EFS volume ID. If provided, a volume will not be created but will still be mounted. Good for persistent games. | | No |
 | `route53_zone` | `string` | A Route53 zone in which to create an A record for `name` pointing to the instance. | | No |
 
 Once all variables have been configured, save the file as `terraform.tfvars`.

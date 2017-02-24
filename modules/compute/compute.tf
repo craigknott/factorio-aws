@@ -13,7 +13,6 @@ variable "ami_release" { default = "trusty" }
 variable "ssh_key" {}
 variable "factorio_version" { default = "0.14.22" }
 variable "game_name" { default = "current" }
-variable "efs_fs_id" { default = "" }
 variable "route53_zone" { default = "" }
 
 # -------
@@ -42,12 +41,10 @@ resource "aws_security_group" "efs" {
 }
 
 resource "aws_efs_file_system" "efs" {
-    count = "${var.efs_fs_id == "" ? 1 : 0}"
     tags = "${merge(map("Name", "${var.name}"), var.tags)}"
 }
 
 resource "aws_efs_mount_target" "efs" {
-    count = "${var.efs_fs_id == "" ? var.az_count : 0}"
     file_system_id = "${aws_efs_file_system.efs.id}"
     subnet_id = "${element(var.subnet_ids, count.index)}"
     security_groups = ["${aws_security_group.efs.id}"]
@@ -98,7 +95,7 @@ data "template_file" "cloud_config" {
     template = "${file("${path.module}/cloud-config.yml")}"
     vars {
         aws_region = "${var.region}"
-        fs_id = "${var.efs_fs_id == "" ? aws_efs_file_system.efs.id : var.efs_fs_id}"
+        fs_id = "${aws_efs_file_system.efs.id}"
         factorio_version = "${var.factorio_version}"
         game_name = "${var.game_name}"
     }
@@ -115,7 +112,6 @@ resource "aws_instance" "factorio" {
     lifecycle { create_before_destroy = true }
     depends_on = [
         "aws_efs_mount_target.efs",
-        "aws_security_group.instance"
     ]
 }
 
